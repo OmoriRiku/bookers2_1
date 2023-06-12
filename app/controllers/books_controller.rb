@@ -1,4 +1,6 @@
 class BooksController < ApplicationController
+  before_action :set_book, only: [:show, :edit, :update, :destroy]
+  
   def create
     @book = Book.new(book_params)
     @book.user_id = current_user.id
@@ -14,7 +16,6 @@ class BooksController < ApplicationController
   
   def show
     @new_book = Book.new
-    @book = Book.find(params[:id])
     @user = @book.user
   end
   
@@ -22,12 +23,20 @@ class BooksController < ApplicationController
   end
   
   def update
+    @book.update(book_params)
+    redirect_to book_path(@book)
   end
   
   def destroy
+    @book.destroy
+    redirect_to books_path
   end
   
   private
+  
+  def set_book
+    @book = Book.find(params[:id])
+  end
   
   def book_params
     params.require(:book).permit(:title, :body)

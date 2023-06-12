@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
   
+  before_action :set_user, only: [:show, :edit, :update]
+  
   def index
     @users = User.all
     @user = current_user
@@ -7,7 +9,6 @@ class UsersController < ApplicationController
   end
   
   def show
-    @user = User.find(params[:id])
     @book = Book.new
     @books = @user.books.all
   end
@@ -16,6 +17,18 @@ class UsersController < ApplicationController
   end
   
   def update
+    @user.update(user_params)
+    redirect_to user_path(@user)
+  end
+  
+  private
+  
+  def set_user
+    @user = User.find(params[:id])
+  end
+  
+  def user_params
+    params.require(:user).permit(:name, :introduction, :profile_image)
   end
   
 end
